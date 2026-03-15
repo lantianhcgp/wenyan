@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'models.dart';
 import 'word_popup.dart';
+import 'dictionary_service.dart';
 
 class SegmentedText extends StatelessWidget {
   final String text;
@@ -10,10 +11,9 @@ class SegmentedText extends StatelessWidget {
 
   List<InlineSpan> _buildSpans(BuildContext context) {
     final spans = <InlineSpan>[];
-    // 简化：按每个汉字或标点遍历，若能在词典中找到以该字开头的最长词，则高亮那段
+    final dic = DictionaryService();
     int i = 0;
     while (i < text.length) {
-      // 跳过空白
       if (text[i].trim().isEmpty) {
         spans.add(TextSpan(text: text[i]));
         i++; continue;
@@ -25,16 +25,25 @@ class SegmentedText extends StatelessWidget {
           best = cand;
         }
       }
+      Future<void> onTapWord(String w) async {
+        // 先内置，再权威库/远程
+        final g = lexicon[w] ?? await dic.lookup(w) ?? Gloss(w, '未找到词条');
+        // ignore: use_build_context_synchronously
+        await showWordPopup(context, g);
+      }
       if (lexicon.containsKey(best)) {
-        final g = lexicon[best]!;
         spans.add(TextSpan(
           text: best,
           style: const TextStyle(color: Colors.teal, decoration: TextDecoration.underline),
-          recognizer: TapGestureRecognizer()..onTap = () => showWordPopup(context, g),
+          recognizer: TapGestureRecognizer()..onTap = () => onTapWord(best),
         ));
         i += best.length;
       } else {
-        spans.add(TextSpan(text: text[i]));
+        spans.add(TextSpan(
+          text: text[i],
+          style: const TextStyle(color: Colors.black),
+          recognizer: TapGestureRecognizer()..onTap = () => onTapWord(text[i]),
+        ));
         i++;
       }
     }

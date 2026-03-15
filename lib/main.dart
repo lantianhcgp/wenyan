@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/lesson/lesson_page.dart';
+import 'features/lesson/lesson_list_page.dart';
 import 'features/review/review_page.dart';
 import 'features/settings/settings_page.dart';
 
@@ -16,7 +16,7 @@ class WenyanApp extends StatefulWidget {
 
 class _WenyanAppState extends State<WenyanApp> {
   int _index = 0;
-  final _pages = const [LessonPage(), ReviewPage(), SettingsPage()];
+  final _pages = const [LessonListPage(), ReviewPage(), SettingsPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class _WenyanAppState extends State<WenyanApp> {
           selectedIndex: _index,
           onDestinationSelected: (i) => setState(() => _index = i),
           destinations: const [
-            NavigationDestination(icon: Icon(Icons.menu_book_outlined), label: '学习'),
+            NavigationDestination(icon: Icon(Icons.menu_book_outlined), label: '文库'),
             NavigationDestination(icon: Icon(Icons.repeat), label: '复习'),
             NavigationDestination(icon: Icon(Icons.settings), label: '设置'),
           ],
