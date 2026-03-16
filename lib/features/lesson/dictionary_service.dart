@@ -17,7 +17,10 @@ class DictionaryService {
     if (fuzzy != null) return fuzzy;
     // 3) 远程 API（可选）
     final remote = await lookupRemote(word);
-    return remote;
+    if (remote != null) return remote;
+    // 4) 默认开放词典（Moedict，无需 Key）
+    final moe = await lookupMoedict(word);
+    return moe;
   }
 
   Future<Gloss?> lookupRemote(String word) async {
@@ -44,6 +47,33 @@ class DictionaryService {
             final head = (e['head'] ?? word).toString();
             final gloss = (e['gloss'] ?? e['explain'] ?? '').toString();
             if (gloss.isNotEmpty) return Gloss(head, gloss);
+          }
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  /// Moedict 开放词典（现代汉语）：https://www.moedict.tw/uni/词.json
+  Future<Gloss?> lookupMoedict(String word) async {
+    try {
+      final uri = Uri.parse('https://www.moedict.tw/uni/${Uri.encodeComponent(word)}.json');
+      final res = await http.get(uri, headers: {'Accept': 'application/json'}).timeout(const Duration(seconds: 6));
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        final data = json.decode(utf8.decode(res.bodyBytes));
+        if (data is Map<String, dynamic>) {
+          final title = (data['title'] ?? word).toString();
+          final hs = (data['heteronyms'] as List?) ?? const [];
+          final defs = <String>[];
+          for (final h in hs) {
+            final dlist = (h['definitions'] as List?) ?? const [];
+            for (final d in dlist) {
+              final def = (d['def'] ?? '').toString();
+              if (def.isNotEmpty) defs.add(def);
+            }
+          }
+          if (defs.isNotEmpty) {
+            return Gloss(title, defs.join('；'));
           }
         }
       }
