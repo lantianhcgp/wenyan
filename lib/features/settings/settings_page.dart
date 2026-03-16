@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'import_button.dart';
+import 'dictionary_import_button.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -50,6 +51,8 @@ class _SettingsPageState extends State<SettingsPage> {
           Text('数据', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           const ImportButton(),
+          const SizedBox(height: 8),
+          const DictionaryImportButton(),
         ],
       ),
     );

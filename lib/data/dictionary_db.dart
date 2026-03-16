@@ -25,7 +25,12 @@ class DictionaryDb {
         // 资产里没有预置库，跳过
       }
     }
-    _db = await openDatabase(dbPath);
+    _db = await openDatabase(dbPath, version: 1, onCreate: (db, v) async {
+      await db.execute(
+        'CREATE TABLE IF NOT EXISTS entries (head TEXT PRIMARY KEY, gloss TEXT)'
+      );
+      await db.execute('CREATE INDEX IF NOT EXISTS idx_head ON entries(head)');
+    });
   }
 
   static Future<Gloss?> lookupExact(String head) async {
@@ -44,5 +49,40 @@ class DictionaryDb {
     if (rows.isEmpty) return null;
     final r = rows.first;
     return Gloss((r['head'] ?? head).toString(), (r['gloss'] ?? '').toString());
+  }
+
+  /// 导入词典 JSON 到本地数据库。
+  /// 支持格式：
+  /// - 数组：[{"word":"陋室","explain":"简陋的屋子"}, ...] 或 [{"head":"...","gloss":"..."}]
+  /// - 对象：{"陋室":"简陋的屋子", "惟":"只、唯"}
+  static Future<int> importJson(String jsonText) async {
+    await init();
+    if (_db == null) return 0;
+    final db = _db!;
+    int count = 0;
+    try {
+      final data = json.decode(jsonText);
+      await db.transaction((txn) async {
+        Batch batch = txn.batch();
+        void put(String head, String gloss) {
+          if (head.trim().isEmpty || gloss.trim().isEmpty) return;
+          batch.insert('entries', {'head': head.trim(), 'gloss': gloss.trim()}, conflictAlgorithm: ConflictAlgorithm.replace);
+          count++;
+        }
+        if (data is List) {
+          for (final e in data) {
+            if (e is Map<String, dynamic>) {
+              final head = (e['head'] ?? e['word'] ?? '').toString();
+              final gloss = (e['gloss'] ?? e['explain'] ?? '').toString();
+              if (head.isNotEmpty && gloss.isNotEmpty) put(head, gloss);
+            }
+          }
+        } else if (data is Map<String, dynamic>) {
+          data.forEach((k, v) => put(k.toString(), v.toString()));
+        }
+        await batch.commit(noResult: true);
+      });
+    } catch (_) {}
+    return count;
   }
 }
