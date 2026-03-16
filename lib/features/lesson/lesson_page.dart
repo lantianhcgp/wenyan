@@ -26,7 +26,6 @@ class _LessonPageState extends State<LessonPage> {
   }
 
   void _initLexicon() {
-    // 内置少量示例词条，更多释义通过本地 DB / 远程词典实时查询
     _lexicon = {
       '陋室': Gloss('陋室', '简陋的屋子。'),
       '惟': Gloss('惟', '只、唯。'),
@@ -37,7 +36,6 @@ class _LessonPageState extends State<LessonPage> {
   }
 
   Future<Gloss?> _lookup(String word) async {
-    // 本地优先，其次远程词典
     if (_lexicon.containsKey(word)) return _lexicon[word];
     final g = await _dic.lookup(word);
     return g ?? Gloss(word, '未找到权威词条（可在设置中配置词典 API 或导入本地词典）');
@@ -62,7 +60,7 @@ class _LessonPageState extends State<LessonPage> {
               label: const Text('本篇测验（选择题）'),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => QuizPage(lessonData: _data),
+                  builder: (_) => const QuizPage(),
                 ));
               },
             ),

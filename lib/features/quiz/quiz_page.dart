@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../data/dictionary_db.dart';
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({super.key});
+  final Map<String, dynamic>? lessonData; // 可选：从当前篇目抽题
+  const QuizPage({super.key, this.lessonData});
 
   @override
   State<QuizPage> createState() => _QuizPageState();
@@ -23,7 +24,6 @@ class _QuizPageState extends State<QuizPage> {
     final samples = await DictionaryDb.sampleEntries(_qCount);
     final list = <_Q>[];
     for (final g in samples) {
-      // 简易四选一：正确释义 + 随机干扰
       final distractors = (await DictionaryDb.sampleEntries(3))
           .map((e) => e.explain)
           .where((t) => t != g.explain)
