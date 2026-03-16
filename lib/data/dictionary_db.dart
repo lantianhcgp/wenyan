@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -49,6 +50,17 @@ class DictionaryDb {
     if (rows.isEmpty) return null;
     final r = rows.first;
     return Gloss((r['head'] ?? head).toString(), (r['gloss'] ?? '').toString());
+  }
+
+  /// 随机抽取若干词条（用于测验）
+  static Future<List<Gloss>> sampleEntries(int n) async {
+    await init();
+    if (_db == null) return [];
+    final rows = await _db!.rawQuery('SELECT head, gloss FROM entries ORDER BY RANDOM() LIMIT ?', [n]);
+    return rows
+        .map((r) => Gloss((r['head'] ?? '').toString(), (r['gloss'] ?? '').toString()))
+        .where((g) => g.word.isNotEmpty && g.explain.isNotEmpty)
+        .toList();
   }
 
   /// 导入词典 JSON 到本地数据库。

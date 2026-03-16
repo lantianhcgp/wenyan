@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'features/lesson/lesson_list_page.dart';
 import 'features/review/review_page.dart';
 import 'features/settings/settings_page.dart';
+import 'features/quiz/quiz_page.dart';
 
 void main() {
   runApp(const WenyanApp());
@@ -16,7 +17,7 @@ class WenyanApp extends StatefulWidget {
 
 class _WenyanAppState extends State<WenyanApp> {
   int _index = 0;
-  final _pages = const [LessonListPage(), ReviewPage(), SettingsPage()];
+  final _pages = const [LessonListPage(), ReviewPage(), QuizPage(), SettingsPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,7 @@ class _WenyanAppState extends State<WenyanApp> {
           destinations: const [
             NavigationDestination(icon: Icon(Icons.menu_book_outlined), label: '文库'),
             NavigationDestination(icon: Icon(Icons.repeat), label: '复习'),
+            NavigationDestination(icon: Icon(Icons.quiz_outlined), label: '测验'),
             NavigationDestination(icon: Icon(Icons.settings), label: '设置'),
           ],
         ),
