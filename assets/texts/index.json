@@ -1,3 +1,6 @@
 [
-  {"file": "sample.json", "title": "陋室铭", "author": "刘禹锡"}
+  {"file": "sample.json", "title": "陋室铭", "author": "刘禹锡"},
+  {"file": "岳阳楼记.json", "title": "岳阳楼记", "author": "范仲淹"},
+  {"file": "出师表.json", "title": "出师表", "author": "诸葛亮"},
+  {"file": "劝学.json", "title": "劝学", "author": "荀子"}
 ]
