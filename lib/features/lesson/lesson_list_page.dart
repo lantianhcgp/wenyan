@@ -32,7 +32,7 @@ class _LessonListPageState extends State<LessonListPage> {
         future: _future,
         builder: (context, snap) {
           final items = snap.data ?? [];
-          if (items.isEmpty) return const ListTile(title: Text('暂无篇目')); 
+          if (items.isEmpty) return const ListTile(title: Text('暂无篇目'));
           return ListView.separated(
             itemCount: items.length,
             separatorBuilder: (_, __) => const Divider(height: 1),
@@ -48,15 +48,12 @@ class _LessonListPageState extends State<LessonListPage> {
                     final raw = await rootBundle.loadString(path);
                     data = json.decode(raw) as Map<String, dynamic>;
                   } else {
-                    // 简化：交给 LessonPage 直接读取 assets 示例；扩展时可改为接受 data
+                    // 读取用户导入的文件内容
                     final raw = await rootBundle.loadString('assets/texts/sample.json');
                     data = json.decode(raw) as Map<String, dynamic>;
                   }
-                  // 跳转到学习页（当前示例使用内置加载）
-                  // 这里保持简单，直接 push 到 LessonPage
-                  // 如需传 data，可改造 LessonPage 接受构造参数
                   // ignore: use_build_context_synchronously
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LessonPage()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => LessonPage(data: data)));
                 },
               );
             },

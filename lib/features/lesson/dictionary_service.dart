@@ -12,12 +12,12 @@ class DictionaryService {
     // 1) 本地 SQLite 权威词典（若已导入）
     final dbExact = await DictionaryDb.lookupExact(word);
     if (dbExact != null) return dbExact;
-    // 2) 远程 API（可选）
-    final remote = await lookupRemote(word);
-    if (remote != null) return remote;
-    // 3) DB 模糊匹配
+    // 2) DB 模糊匹配
     final fuzzy = await DictionaryDb.lookupFuzzy(word);
-    return fuzzy;
+    if (fuzzy != null) return fuzzy;
+    // 3) 远程 API（可选）
+    final remote = await lookupRemote(word);
+    return remote;
   }
 
   Future<Gloss?> lookupRemote(String word) async {
