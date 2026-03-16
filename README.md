@@ -14,10 +14,9 @@
 - 生词本与复习：
   - 点击词条弹窗可“加入生词本”
   - 复习页：基于简化 SM-2 的三键复习（不认识/模糊/认识）
-
-## 待接入（你提供词典后我会完成）
-- 词典 SQLite 导入器：把你提供的词典转换为 dictionary.db（schema: entries(head TEXT PRIMARY KEY, gloss TEXT)）
-- 测验模式：从篇目与词典生成选择/填空题目（可先上选择题）
+- 本篇测验（选择题）：
+  - 从当前篇目的“注释”和“原文”自动生成 5-10 道选择题
+  - 即点即答，显示正确答案，可返回继续学习
 
 ## 运行
 ```
@@ -42,15 +41,17 @@ flutter run
 - 设置页可配置远程 API（?q=词&key=...）
 - 本地权威词典：放置 dictionary.db 到应用数据目录，或打包到 assets/db/ 并在首次运行复制
   - 表结构：`entries(head TEXT PRIMARY KEY, gloss TEXT)`
+- 词典 JSON 本地导入（设置页）：支持数组或键值映射两种格式，自动写入 SQLite
 
 ## 目录结构
 ```
 lib/
   main.dart
   features/
-    lesson/                 # 学习页（词语点击释义）
+    lesson/                 # 学习页（词语点击释义 + 本篇测验入口）
     review/                 # 复习页（简化 SM-2 UI）
-    settings/               # 设置页（导入篇目 + 词典配置）
+    settings/               # 设置页（导入篇目 + 词典配置/导入）
+    quiz/                   # 测验页（选择题）
 assets/
   texts/
     sample.json             # 示例篇目
@@ -60,7 +61,7 @@ assets/
 ```
 
 ## CI/CD
-- GitHub Actions：push/PR 自动 analyze/test/build；打 tag v* 自动生成 Release 并上传 APK
+- GitHub Actions：push/PR 自动 analyze/test/build；打 tag v* 自动生成 Release 并上传 APK/AAB
 
 ## 许可
 MIT

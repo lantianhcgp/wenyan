@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'library_service.dart';
@@ -47,12 +48,15 @@ class _LessonListPageState extends State<LessonListPage> {
                     final path = e.source.substring('asset:'.length);
                     final raw = await rootBundle.loadString(path);
                     data = json.decode(raw) as Map<String, dynamic>;
+                  } else if (e.source.startsWith('file:')) {
+                    final path = e.source.substring('file:'.length);
+                    final raw = await File(path).readAsString();
+                    data = json.decode(raw) as Map<String, dynamic>;
                   } else {
-                    // 读取用户导入的文件内容
                     final raw = await rootBundle.loadString('assets/texts/sample.json');
                     data = json.decode(raw) as Map<String, dynamic>;
                   }
-                  // ignore: use_build_context_synchronously
+                  if (!mounted) return;
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => LessonPage(data: data)));
                 },
               );
