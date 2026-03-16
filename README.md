@@ -2,12 +2,22 @@
 
 一个面向中文古文学习的跨平台 Flutter 应用：每日一篇、注释与译文、词语点击释义、测验与复习（间隔重复）。
 
-## MVP 功能
-- 文库与导入：内置高中篇目索引（assets/texts/index.json）；支持将用户 JSON 放到应用数据目录（稍后在设置页提供“导入”入口）
-- 日常学习：古文原文 + 分句断句 + 注释 + 译文
-- 词语点击释义：点击词弹出词条（内置小词库 + 权威词典：本地 SQLite / 远程 API）
-- 测验模式：填空/选择/判断 + 解析（规划中）
-- 生词本与复习：基于间隔重复（规划中）
+## 功能清单（当前可用）
+- 文库与导入：
+  - 内置篇目索引（assets/texts/index.json）
+  - 设置页一键导入自定义 JSON（写入应用数据目录 /texts）
+- 日常学习：古文原文 + 注释 + 译文
+- 词语点击释义：
+  - 先查本地小词库
+  - 再查本地 SQLite 权威词典（若已有 dictionary.db）
+  - 最后可选远程 API（设置页配置 base/key）
+- 生词本与复习：
+  - 点击词条弹窗可“加入生词本”
+  - 复习页：基于简化 SM-2 的三键复习（不认识/模糊/认识）
+
+## 待接入（你提供词典后我会完成）
+- 词典 SQLite 导入器：把你提供的词典转换为 dictionary.db（schema: entries(head TEXT PRIMARY KEY, gloss TEXT)）
+- 测验模式：从篇目与词典生成选择/填空题目（可先上选择题）
 
 ## 运行
 ```
@@ -16,7 +26,8 @@ flutter run
 ```
 
 ## 导入自定义篇目
-将 JSON 文件放到 `assets/texts/`，并把文件登记到 `assets/texts/index.json`，格式示例：
+设置页 -> 导入自定义篇目 JSON。
+格式示例：
 ```json
 {
   "title": "陋室铭",
@@ -27,9 +38,10 @@ flutter run
 }
 ```
 
-## 词典计划（权威来源）
-- 优先考虑接入「汉典」/「教育部重编国语辞典」或开放 API（若需代理/授权，将在设置页配置密钥）
-- 当前为本地示例词库（见 `LessonPage._lexicon`）
+## 词典接入
+- 设置页可配置远程 API（?q=词&key=...）
+- 本地权威词典：放置 dictionary.db 到应用数据目录，或打包到 assets/db/ 并在首次运行复制
+  - 表结构：`entries(head TEXT PRIMARY KEY, gloss TEXT)`
 
 ## 目录结构
 ```
@@ -37,16 +49,18 @@ lib/
   main.dart
   features/
     lesson/                 # 学习页（词语点击释义）
-    review/                 # 复习页（占位）
-    settings/               # 设置页（占位）
+    review/                 # 复习页（简化 SM-2 UI）
+    settings/               # 设置页（导入篇目 + 词典配置）
 assets/
   texts/
     sample.json             # 示例篇目
     index.json              # 文库索引
+  db/
+    dictionary.db (可选)
 ```
 
 ## CI/CD
-- GitHub Actions：push/PR 自动 analyze/test/build；打 tag v* 自动生成 Release APK
+- GitHub Actions：push/PR 自动 analyze/test/build；打 tag v* 自动生成 Release 并上传 APK
 
 ## 许可
 MIT
