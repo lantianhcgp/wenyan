@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'features/lesson/lesson_list_page.dart';
 import 'features/review/review_page.dart';
-import 'features/settings/settings_page.dart';
 import 'features/quiz/quiz_page.dart';
+import 'features/settings/settings_page.dart';
+
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   runApp(const WenyanApp());
@@ -22,6 +24,7 @@ class _WenyanAppState extends State<WenyanApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: appNavigatorKey,
       title: '文言文学习',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),

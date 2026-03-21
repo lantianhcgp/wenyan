@@ -1,7 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'library_service.dart';
 import 'lesson_page.dart';
 
@@ -42,20 +39,9 @@ class _LessonListPageState extends State<LessonListPage> {
               return ListTile(
                 title: Text(e.title),
                 subtitle: Text(e.author),
+                trailing: const Icon(Icons.chevron_right),
                 onTap: () async {
-                  Map<String, dynamic> data;
-                  if (e.source.startsWith('asset:')) {
-                    final path = e.source.substring('asset:'.length);
-                    final raw = await rootBundle.loadString(path);
-                    data = json.decode(raw) as Map<String, dynamic>;
-                  } else if (e.source.startsWith('file:')) {
-                    final path = e.source.substring('file:'.length);
-                    final raw = await File(path).readAsString();
-                    data = json.decode(raw) as Map<String, dynamic>;
-                  } else {
-                    final raw = await rootBundle.loadString('assets/texts/sample.json');
-                    data = json.decode(raw) as Map<String, dynamic>;
-                  }
+                  final data = await LibraryService.loadBySource(e.source);
                   if (!mounted) return;
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => LessonPage(data: data)));
                 },

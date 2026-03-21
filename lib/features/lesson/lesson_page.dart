@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'models.dart';
 import 'segment_text.dart';
 import 'dictionary_service.dart';
 import '../quiz/quiz_page.dart';
+import 'library_service.dart';
 
 class LessonPage extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -32,7 +32,25 @@ class _LessonPageState extends State<LessonPage> {
       '德馨': Gloss('德馨', '美德芳香，比喻品德高尚。'),
       '仙': Gloss('仙', '指仙人，这里泛指高人。'),
       '灵': Gloss('灵', '灵验、神奇。'),
+      '谪守': Gloss('谪守', '因罪贬谪流放，出任外官。'),
+      '百废具兴': Gloss('百废具兴', '各种荒废的事业都兴办起来。具，同“俱”。'),
+      '先帝': Gloss('先帝', '指蜀汉先主刘备。'),
+      '崩殂': Gloss('崩殂', '古代称帝王去世。'),
+      '劝学': Gloss('劝学', '勉励学习、强调后天积累的重要。'),
     };
+
+    final notes = ((_data['notes'] as List?) ?? const []).map((e) => e.toString());
+    for (final note in notes) {
+      final normalized = note.replaceAll('：', ':');
+      final idx = normalized.indexOf(':');
+      if (idx > 0 && idx < normalized.length - 1) {
+        final head = normalized.substring(0, idx).trim();
+        final gloss = normalized.substring(idx + 1).trim();
+        if (head.isNotEmpty && gloss.isNotEmpty) {
+          _lexicon[head] = Gloss(head, gloss);
+        }
+      }
+    }
   }
 
   Future<Gloss?> _lookup(String word) async {
@@ -43,7 +61,10 @@ class _LessonPageState extends State<LessonPage> {
 
   @override
   Widget build(BuildContext context) {
-    final paragraphs = (_data['paragraphs'] as List).cast<String>();
+    final paragraphs = ((_data['paragraphs'] as List?) ?? const []).cast<String>();
+    final notes = ((_data['notes'] as List?) ?? const []).cast<String>();
+    final translation = (_data['translation'] ?? '').toString();
+    final questions = LibraryService.buildQuestions(_data);
 
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -52,18 +73,28 @@ class _LessonPageState extends State<LessonPage> {
           Text(_data['title'] ?? '', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text(_data['author'] ?? '', style: Theme.of(context).textTheme.labelMedium),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: OutlinedButton.icon(
-              icon: const Icon(Icons.quiz_outlined),
-              label: const Text('本篇测验（选择题）'),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => const QuizPage(),
-                ));
-              },
-            ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.icon(
+                icon: const Icon(Icons.quiz_outlined),
+                label: Text('本篇测验（${questions.length}题）'),
+                onPressed: questions.isEmpty
+                    ? null
+                    : () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => QuizPage(lessonData: _data),
+                        ));
+                      },
+              ),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.menu_book),
+                label: const Text('点击正文可查词'),
+                onPressed: null,
+              ),
+            ],
           ),
           const Divider(height: 24),
           ...paragraphs.map((p) => Padding(
@@ -72,10 +103,16 @@ class _LessonPageState extends State<LessonPage> {
               )),
           const Divider(height: 24),
           Text('注释', style: Theme.of(context).textTheme.titleMedium),
-          ...((_data['notes'] as List).map((n) => ListTile(leading: const Text('·'), title: Text(n as String)))),
+          if (notes.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text('当前篇目暂无结构化注释，仍可点击正文逐词查询。'),
+            )
+          else
+            ...notes.map((n) => ListTile(leading: const Text('·'), title: Text(n))),
           const Divider(height: 24),
           Text('译文', style: Theme.of(context).textTheme.titleMedium),
-          Text(_data['translation'] ?? ''),
+          Text(translation.isEmpty ? '当前篇目暂未内置完整译文。' : translation),
         ],
       ),
     );
