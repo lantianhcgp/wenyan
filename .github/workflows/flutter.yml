@@ -24,6 +24,9 @@ jobs:
       - name: Analyze
         continue-on-error: true
         run: flutter analyze
+      - name: Test
+        continue-on-error: true
+        run: flutter test
       - name: Build APK (debug)
         run: |
           echo 'org.gradle.jvmargs=-Xmx3g -Dkotlin.daemon.jvm.options=-Xmx3g' >> android/gradle.properties
@@ -43,16 +46,28 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+      - name: Flutter version
+        run: flutter --version
       - name: Ensure Android platform (generate android/)
         run: flutter create . --platforms=android
-      - run: flutter pub get
-      - run: |
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze
+        continue-on-error: true
+        run: flutter analyze
+      - name: Test
+        continue-on-error: true
+        run: flutter test
+      - name: Build release artifacts
+        run: |
           echo 'org.gradle.jvmargs=-Xmx4g -Dkotlin.daemon.jvm.options=-Xmx4g' >> android/gradle.properties
           flutter build apk --release --split-per-abi
-      - run: flutter build appbundle --release
+          flutter build appbundle --release
       - name: Release APK/AAB
         uses: softprops/action-gh-release@v2
         with:
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
           files: |
             build/app/outputs/flutter-apk/*release*.apk
             build/app/outputs/bundle/release/app-release.aab
