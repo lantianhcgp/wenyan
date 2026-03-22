@@ -1,6 +1,6 @@
 # Wenyan Progress
 
-_Last updated: 2026-03-22 10:42 Asia/Shanghai_
+_Last updated: 2026-03-22 10:45 Asia/Shanghai_
 
 - 当前任务：审查本地未提交 UI 改动，收敛 MD3 / Material You 视觉方向，并推进下一版 release
 - 进度：90%（已开始真实切版动作：pubspec 版本号已从 0.4.0+6 提升到 0.4.3+7，下一步就是整理提交并考虑打 tag）
@@ -37,7 +37,7 @@ Continue iterating the app toward a more polished MD3 / Material You style, unif
 
 - Flutter / Dart CLI is not available in the current environment, so local build verification is temporarily blocked here.
 - The repository now includes the local helper script `scripts/update_progress.sh`, but its progress logic is still too coarse and should not be treated as the sole source of truth.
-- The app version is still `0.4.0+6`, so the next release cut has not been prepared yet.
+- The app version has now been bumped to `0.4.3+7`, so the next release cut is no longer blocked on versioning.
 - External web search is currently not available through the default Brave-backed search tool in this environment, so case-study gathering may need to rely on alternative search routes or existing design knowledge.
 
 ## Expected output for next checkpoint
