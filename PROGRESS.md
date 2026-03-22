@@ -1,9 +1,9 @@
 # Wenyan Progress
 
-_Last updated: 2026-03-22 10:48 Asia/Shanghai_
+_Last updated: 2026-03-22 10:51 Asia/Shanghai_
 
 - 当前任务：审查本地未提交 UI 改动，收敛 MD3 / Material You 视觉方向，并推进下一版 release
-- 进度：95%（工作区已干净，版本号与 tag 序列已对齐；从仓库状态看，下一步直接切 `v0.4.3` 已具备条件）
+- 进度：100%（`v0.4.3` 标签已推送，下一版 release 已正式触发；当前进入等待 GitHub Actions 产出阶段）
 
 ## Current goal
 
