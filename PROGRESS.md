@@ -1,9 +1,9 @@
 # Wenyan Progress
 
-_Last updated: 2026-03-22 09:42 Asia/Shanghai_
+_Last updated: 2026-03-22 09:48 Asia/Shanghai_
 
 - 当前任务：审查本地未提交 UI 改动，收敛 MD3 / Material You 视觉方向，并推进下一版 release
-- 进度：55%（这轮视觉统一已覆盖 6 个核心文件，改动规模已成型；当前主要缺本地 Flutter / Dart 构建环境验证）
+- 进度：60%（这轮视觉统一的核心改动已整理成可提交范围：8 个文件、558 行新增 / 179 行替换，正在收口成真正的视觉 commit）
 
 ## Current goal
 
@@ -41,7 +41,6 @@ Continue iterating the app toward a more polished MD3 / Material You style, unif
 
 ## Expected output for next checkpoint
 
-- A clearer summary of what changed locally
-- One or more concrete commits
+- One concrete visual-unification commit
 - Updated UI consistency status by page
 - If feasible, a new release

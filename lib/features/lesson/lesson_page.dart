@@ -66,55 +66,95 @@ class _LessonPageState extends State<LessonPage> {
     final translation = (_data['translation'] ?? '').toString();
     final questions = LibraryService.buildQuestions(_data);
 
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: ListView(
-        children: [
-          Text(_data['title'] ?? '', style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 8),
-          Text(_data['author'] ?? '', style: Theme.of(context).textTheme.labelMedium),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+    final scheme = Theme.of(context).colorScheme;
+    return ListView(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: scheme.primaryContainer,
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FilledButton.icon(
-                icon: const Icon(Icons.quiz_outlined),
-                label: Text('本篇测验（${questions.length}题）'),
-                onPressed: questions.isEmpty
-                    ? null
-                    : () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => QuizPage(lessonData: _data),
-                        ));
-                      },
-              ),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.menu_book),
-                label: const Text('点击正文可查词'),
-                onPressed: null,
+              Text(_data['title'] ?? '', style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: scheme.onPrimaryContainer)),
+              const SizedBox(height: 8),
+              Text(_data['author'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onPrimaryContainer.withOpacity(0.9))),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  FilledButton.icon(
+                    icon: const Icon(Icons.quiz_outlined),
+                    label: Text('本篇测验（${questions.length}题）'),
+                    onPressed: questions.isEmpty
+                        ? null
+                        : () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => QuizPage(lessonData: _data),
+                            ));
+                          },
+                  ),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.menu_book),
+                    label: const Text('点击正文可查词'),
+                    onPressed: null,
+                  ),
+                ],
               ),
             ],
           ),
-          const Divider(height: 24),
-          ...paragraphs.map((p) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: SegmentedText(text: p, lexicon: _lexicon),
-              )),
-          const Divider(height: 24),
-          Text('注释', style: Theme.of(context).textTheme.titleMedium),
-          if (notes.isEmpty)
-            const Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Text('当前篇目暂无结构化注释，仍可点击正文逐词查询。'),
-            )
-          else
-            ...notes.map((n) => ListTile(leading: const Text('·'), title: Text(n))),
-          const Divider(height: 24),
-          Text('译文', style: Theme.of(context).textTheme.titleMedium),
-          Text(translation.isEmpty ? '当前篇目暂未内置完整译文。' : translation),
-        ],
-      ),
+        ),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('正文', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 12),
+                ...paragraphs.map((p) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: SegmentedText(text: p, lexicon: _lexicon),
+                    )),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('注释', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 12),
+                if (notes.isEmpty)
+                  const Text('当前篇目暂无结构化注释，仍可点击正文逐词查询。')
+                else
+                  ...notes.map((n) => ListTile(contentPadding: EdgeInsets.zero, leading: const Text('·'), title: Text(n))),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('译文', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 12),
+                Text(translation.isEmpty ? '当前篇目暂未内置完整译文。' : translation),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+      ],
     );
   }
 }

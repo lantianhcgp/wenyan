@@ -41,7 +41,7 @@ class SegmentedText extends StatelessWidget {
       } else {
         spans.add(TextSpan(
           text: text[i],
-          style: const TextStyle(color: Colors.black),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           recognizer: TapGestureRecognizer()..onTap = () => onTapWord(text[i]),
         ));
         i++;
@@ -52,6 +52,6 @@ class SegmentedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(text: TextSpan(style: const TextStyle(color: Colors.black, fontSize: 18, height: 1.6), children: _buildSpans(context)));
+    return RichText(text: TextSpan(style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 18, height: 1.6), children: _buildSpans(context)));
   }
 }

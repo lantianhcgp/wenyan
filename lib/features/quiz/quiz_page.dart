@@ -87,64 +87,91 @@ class _QuizPageState extends State<QuizPage> {
         if (qs.isEmpty) {
           return const Center(child: Text('请先在设置页导入词典，或进入具体篇目使用本篇测验。'));
         }
+        final scheme = Theme.of(context).colorScheme;
         if (_finished) {
           return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('测验完成', style: Theme.of(context).textTheme.headlineSmall),
-                  const SizedBox(height: 12),
-                  Text('得分：$_score / ${qs.length}', style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        _index = 0;
-                        _score = 0;
-                        _finished = false;
-                        _future = _load();
-                      });
-                    },
-                    child: const Text('再来一轮'),
-                  )
-                ],
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.emoji_events_rounded, size: 40, color: scheme.primary),
+                    const SizedBox(height: 12),
+                    Text('测验完成', style: Theme.of(context).textTheme.headlineSmall),
+                    const SizedBox(height: 12),
+                    Text('得分：$_score / ${qs.length}', style: Theme.of(context).textTheme.titleLarge),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          _index = 0;
+                          _score = 0;
+                          _finished = false;
+                          _future = _load();
+                        });
+                      },
+                      child: const Text('再来一轮'),
+                    )
+                  ],
+                ),
               ),
             ),
           );
         }
         final q = qs[_index.clamp(0, qs.length - 1)];
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return ListView(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: scheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('第 ${_index + 1} / ${qs.length} 题', style: Theme.of(context).textTheme.titleMedium),
-                  Text('当前得分：$_score'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('第 ${_index + 1} / ${qs.length} 题', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: scheme.onSecondaryContainer)),
+                      Text('得分：$_score', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: scheme.onSecondaryContainer)),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(widget.lessonData != null ? '本篇测验' : '词典测验', style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: scheme.onSecondaryContainer)),
+                  const SizedBox(height: 8),
+                  Text('从题目与干扰项中快速建立语感。', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSecondaryContainer.withOpacity(0.9))),
                 ],
               ),
-              const SizedBox(height: 12),
-              Text(widget.lessonData != null ? '本篇测验' : '词典测验', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 12),
-              Text(q.prompt, style: Theme.of(context).textTheme.headlineSmall),
-              if ((q.sourceText ?? '').isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(q.sourceText!, style: Theme.of(context).textTheme.bodySmall),
-              ],
-              const SizedBox(height: 16),
-              ...q.options.map((opt) => Card(
-                    child: ListTile(
-                      title: Text(opt),
-                      leading: const Icon(Icons.circle_outlined),
-                      onTap: () => _pick(qs, q, opt),
-                    ),
-                  )),
-            ],
-          ),
+            ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(q.prompt, style: Theme.of(context).textTheme.headlineSmall),
+                    if ((q.sourceText ?? '').isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Text(q.sourceText!, style: Theme.of(context).textTheme.bodyMedium),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            ...q.options.map((opt) => Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    title: Text(opt),
+                    leading: Icon(Icons.radio_button_unchecked_rounded, color: scheme.primary),
+                    trailing: Icon(Icons.arrow_outward_rounded, color: scheme.primary),
+                    onTap: () => _pick(qs, q, opt),
+                  ),
+                )),
+            const SizedBox(height: 24),
+          ],
         );
       },
     );
