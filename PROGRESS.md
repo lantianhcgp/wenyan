@@ -1,9 +1,9 @@
 # Wenyan Progress
 
-_Last updated: 2026-03-22 09:39 Asia/Shanghai_
+_Last updated: 2026-03-22 09:42 Asia/Shanghai_
 
 - 当前任务：审查本地未提交 UI 改动，收敛 MD3 / Material You 视觉方向，并推进下一版 release
-- 进度：50%（学习页与测验页都已开始进入统一视觉系统，核心学习流的页面收口正式展开）
+- 进度：55%（这轮视觉统一已覆盖 6 个核心文件，改动规模已成型；当前主要缺本地 Flutter / Dart 构建环境验证）
 
 ## Current goal
 
@@ -35,7 +35,8 @@ Continue iterating the app toward a more polished MD3 / Material You style, unif
 
 ## Risks / blockers
 
-- Some work exists only as uncommitted local changes and still needs review.
+- This visual pass still exists as local uncommitted changes and needs to be committed cleanly.
+- Flutter / Dart CLI is not available in the current environment, so local build verification is temporarily blocked here.
 - External web search is currently not available through the default Brave-backed search tool in this environment, so case-study gathering may need to rely on alternative search routes or existing design knowledge.
 
 ## Expected output for next checkpoint
