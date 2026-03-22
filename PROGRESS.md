@@ -1,9 +1,9 @@
 # Wenyan Progress
 
-_Last updated: 2026-03-22 09:48 Asia/Shanghai_
+_Last updated: 2026-03-22 09:51 Asia/Shanghai_
 
 - 当前任务：审查本地未提交 UI 改动，收敛 MD3 / Material You 视觉方向，并推进下一版 release
-- 进度：60%（这轮视觉统一的核心改动已整理成可提交范围：8 个文件、558 行新增 / 179 行替换，正在收口成真正的视觉 commit）
+- 进度：65%（核心视觉统一改动已经真正进入 main；当前工作区基本干净，接下来转向可发布收口与补充仓库脚本）
 
 ## Current goal
 
@@ -35,8 +35,8 @@ Continue iterating the app toward a more polished MD3 / Material You style, unif
 
 ## Risks / blockers
 
-- This visual pass still exists as local uncommitted changes and needs to be committed cleanly.
 - Flutter / Dart CLI is not available in the current environment, so local build verification is temporarily blocked here.
+- The repository still has one useful local helper script (`scripts/update_progress.sh`) that has not been committed yet.
 - External web search is currently not available through the default Brave-backed search tool in this environment, so case-study gathering may need to rely on alternative search routes or existing design knowledge.
 
 ## Expected output for next checkpoint
