@@ -1,9 +1,9 @@
 # Wenyan Progress
 
-_Last updated: 2026-03-22 09:51 Asia/Shanghai_
+_Last updated: 2026-03-22 09:54 Asia/Shanghai_
 
 - 当前任务：审查本地未提交 UI 改动，收敛 MD3 / Material You 视觉方向，并推进下一版 release
-- 进度：65%（核心视觉统一改动已经真正进入 main；当前工作区基本干净，接下来转向可发布收口与补充仓库脚本）
+- 进度：70%（核心视觉统一改动已进入 main，README 与 CI/CD 已复核，当前进入下一版 release 的准备阶段）
 
 ## Current goal
 
@@ -43,4 +43,5 @@ Continue iterating the app toward a more polished MD3 / Material You style, unif
 
 - One concrete visual-unification commit
 - Updated UI consistency status by page
+- Release-prep status for the next version
 - If feasible, a new release
