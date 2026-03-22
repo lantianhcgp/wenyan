@@ -1,9 +1,9 @@
 # Wenyan Progress
 
-_Last updated: 2026-03-22 09:30 Asia/Shanghai_
+_Last updated: 2026-03-22 09:33 Asia/Shanghai_
 
 - 当前任务：审查本地未提交 UI 改动，收敛 MD3 / Material You 视觉方向，并推进下一版 release
-- 进度：35%（已抽出本地 UI patch 主体，确认这轮改动是成体系的视觉收口而不是零散改动）
+- 进度：40%（已明确第一批保留范围，接下来不再只盘点，而是进入学习页 / 测验页的实际收口阶段）
 
 ## Current goal
 
@@ -27,8 +27,7 @@ Continue iterating the app toward a more polished MD3 / Material You style, unif
 
 ## Next
 
-- Lock this first-pass visual scope as a coherent keep-set.
-- Bring lesson page and quiz page into the same MD3 visual system.
+- Apply the same design system to lesson page and quiz page.
 - Continue polishing the full learning flow end-to-end.
 - Commit a coherent visual pass.
 - Push and prepare the next release if stable.
