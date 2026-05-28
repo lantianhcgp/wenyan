@@ -9,31 +9,36 @@ ROOT_BUILD=$(find android -maxdepth 1 -name 'build.gradle*' | head -1)
 if [ -n "$ROOT_BUILD" ]; then
   echo "Updating root: $ROOT_BUILD"
   if [[ "$ROOT_BUILD" == *.kts ]]; then
-    # Kotlin DSL: use BaseExtension to cover both Library & Application plugins
+    # Kotlin DSL: use plugins.withType to avoid "already evaluated" error
     cat >> "$ROOT_BUILD" << 'KOTLIN'
 subprojects {
-    afterEvaluate {
-        extensions.findByType(com.android.build.gradle.BaseExtension::class.java)
-            ?.compileSdkVersion(36)
+    plugins.withId("com.android.application") {
+        extensions.configure<com.android.build.gradle.internal.dsl.BaseAppModuleExtension> {
+            compileSdkVersion(36)
+        }
+    }
+    plugins.withId("com.android.library") {
+        extensions.configure<com.android.build.gradle.LibraryExtension> {
+            compileSdkVersion(36)
+        }
     }
 }
 KOTLIN
-    # Fix the SDK version via sed (the heredoc above has hardcoded 36)
     sed -i "s/compileSdkVersion(36)/compileSdkVersion($SDK_VERSION)/" "$ROOT_BUILD"
   else
     # Groovy DSL
     cat >> "$ROOT_BUILD" << GROOVY
 subprojects {
-    afterEvaluate {
-        if (project.hasProperty('android')) {
-            android {
-                compileSdkVersion $SDK_VERSION
-            }
-        }
+    plugins.withId('com.android.application') {
+        android.compileSdkVersion $SDK_VERSION
+    }
+    plugins.withId('com.android.library') {
+        android.compileSdkVersion $SDK_VERSION
     }
 }
 GROOVY
   fi
+  echo "Updated root: $ROOT_BUILD"
 fi
 
 # Update app-level build.gradle(.kts)
