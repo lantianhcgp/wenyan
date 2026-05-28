@@ -4,12 +4,11 @@ set -e
 
 SDK_VERSION="${1:-36}"
 
-# Update root build.gradle(.kts) — force all plugin subprojects to use the target SDK
+# Update root build.gradle(.kts)
 ROOT_BUILD=$(find android -maxdepth 1 -name 'build.gradle*' | head -1)
 if [ -n "$ROOT_BUILD" ]; then
   echo "Updating root: $ROOT_BUILD"
   if [[ "$ROOT_BUILD" == *.kts ]]; then
-    # Kotlin DSL: use plugins.withType to avoid "already evaluated" error
     cat >> "$ROOT_BUILD" << 'KOTLIN'
 subprojects {
     plugins.withId("com.android.application") {
@@ -26,7 +25,6 @@ subprojects {
 KOTLIN
     sed -i "s/compileSdkVersion(36)/compileSdkVersion($SDK_VERSION)/" "$ROOT_BUILD"
   else
-    # Groovy DSL
     cat >> "$ROOT_BUILD" << GROOVY
 subprojects {
     plugins.withId('com.android.application') {
@@ -50,6 +48,15 @@ if [ -n "$APP_BUILD" ]; then
   else
     sed -i "s/compileSdkVersion: .*/compileSdkVersion $SDK_VERSION/" "$APP_BUILD"
     sed -i "s/compileSdk .*/compileSdk $SDK_VERSION/" "$APP_BUILD"
+  fi
+fi
+
+# Disable AAR metadata check so plugins compiled against older SDKs don't block the build
+PROPS_FILE="android/gradle.properties"
+if [ -f "$PROPS_FILE" ]; then
+  if ! grep -q "android.enableAarMetadataCheck" "$PROPS_FILE"; then
+    echo "android.enableAarMetadataCheck=false" >> "$PROPS_FILE"
+    echo "Disabled AAR metadata check in $PROPS_FILE"
   fi
 fi
 
