@@ -60,6 +60,7 @@ class _QuizPageState extends State<QuizPage> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
+              if (!mounted) return;
               setState(() {
                 if (isLast) {
                   _finished = true;

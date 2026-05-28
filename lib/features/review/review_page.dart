@@ -10,11 +10,21 @@ class ReviewPage extends StatefulWidget {
 
 class _ReviewPageState extends State<ReviewPage> {
   late Future<List<ReviewItem>> _future;
+  bool? _hasItems;
 
   @override
   void initState() {
     super.initState();
-    _future = ReviewDb.dueItems();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final hasItems = await ReviewDb.hasAnyItems();
+    if (!mounted) return;
+    setState(() {
+      _hasItems = hasItems;
+      _future = ReviewDb.dueItems();
+    });
   }
 
   Future<void> _reload() async {
@@ -32,6 +42,7 @@ class _ReviewPageState extends State<ReviewPage> {
           return const Center(child: CircularProgressIndicator());
         }
         if (items.isEmpty) {
+          final hasItems = _hasItems ?? false;
           return Center(
             child: Card(
               child: Padding(
@@ -39,11 +50,24 @@ class _ReviewPageState extends State<ReviewPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.done_all_rounded, size: 40, color: scheme.primary),
+                    Icon(
+                      hasItems ? Icons.done_all_rounded : Icons.bookmarks_outlined,
+                      size: 40,
+                      color: scheme.primary,
+                    ),
                     const SizedBox(height: 12),
-                    Text('当前没有待复习词条', style: Theme.of(context).textTheme.titleLarge),
+                    Text(
+                      hasItems ? '今日复习完成！' : '当前没有待复习词条',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                     const SizedBox(height: 8),
-                    Text('在学习页点词后加入生词本，这里会自动出现复习卡片。', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                    Text(
+                      hasItems
+                          ? '所有词条都已复习完毕，明天再来巩固吧。'
+                          : '在学习页点词后加入生词本，这里会自动出现复习卡片。',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               ),

@@ -85,8 +85,10 @@ class ReviewDb {
         nextDue = now.add(Duration(days: interval));
         break;
       case 'fuzzy':
-        interval = (interval == 0 ? 1 : interval);
-        nextDue = now.add(Duration(days: interval));
+        interval = 1;
+        ease = ease - 0.1;
+        if (ease < 1.3) ease = 1.3;
+        nextDue = now.add(const Duration(days: 1));
         break;
       default:
         interval = 0;
@@ -105,5 +107,12 @@ class ReviewDb {
     final db = await _open();
     final rows = await db.rawQuery('SELECT COUNT(*) AS c FROM review');
     return (rows.first['c'] as int?) ?? 0;
+  }
+
+  /// 检查是否有任何已添加的词条（不管是否到期）
+  static Future<bool> hasAnyItems() async {
+    final db = await _open();
+    final rows = await db.rawQuery('SELECT COUNT(*) AS c FROM review');
+    return ((rows.first['c'] as int?) ?? 0) > 0;
   }
 }

@@ -5,8 +5,6 @@ import 'features/quiz/quiz_page.dart';
 import 'features/settings/settings_page.dart';
 import 'theme/app_theme.dart';
 
-final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
-
 void main() {
   runApp(const WenyanApp());
 }
@@ -32,7 +30,6 @@ class _WenyanAppState extends State<WenyanApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: appNavigatorKey,
       title: '文言文学习',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),

@@ -26,18 +26,7 @@ class _LessonPageState extends State<LessonPage> {
   }
 
   void _initLexicon() {
-    _lexicon = {
-      '陋室': Gloss('陋室', '简陋的屋子。'),
-      '惟': Gloss('惟', '只、唯。'),
-      '德馨': Gloss('德馨', '美德芳香，比喻品德高尚。'),
-      '仙': Gloss('仙', '指仙人，这里泛指高人。'),
-      '灵': Gloss('灵', '灵验、神奇。'),
-      '谪守': Gloss('谪守', '因罪贬谪流放，出任外官。'),
-      '百废具兴': Gloss('百废具兴', '各种荒废的事业都兴办起来。具，同“俱”。'),
-      '先帝': Gloss('先帝', '指蜀汉先主刘备。'),
-      '崩殂': Gloss('崩殂', '古代称帝王去世。'),
-      '劝学': Gloss('劝学', '勉励学习、强调后天积累的重要。'),
-    };
+    _lexicon = {};
 
     final notes = ((_data['notes'] as List?) ?? const []).map((e) => e.toString());
     for (final note in notes) {

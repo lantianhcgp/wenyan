@@ -28,7 +28,7 @@ class SegmentedText extends StatelessWidget {
       Future<void> onTapWord(String w) async {
         // 先内置，再权威库/远程
         final g = lexicon[w] ?? await dic.lookup(w) ?? Gloss(w, '未找到词条');
-        // ignore: use_build_context_synchronously
+        if (!context.mounted) return;
         await showWordPopup(context, g);
       }
       if (lexicon.containsKey(best)) {

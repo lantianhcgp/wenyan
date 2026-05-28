@@ -10,7 +10,8 @@ class ImportButton extends StatelessWidget {
     final res = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
     if (res != null && res.files.isNotEmpty) {
       final f = res.files.single;
-      final bytes = f.bytes ?? await File(f.path!).readAsBytes();
+      final bytes = f.bytes ?? (f.path != null ? await File(f.path!).readAsBytes() : null);
+      if (bytes == null) return;
       await LibraryService.importJson(String.fromCharCodes(bytes), filename: f.name);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('导入成功')));

@@ -10,10 +10,15 @@ class DictionaryImportButton extends StatelessWidget {
     final res = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
     if (res != null && res.files.isNotEmpty) {
       final f = res.files.single;
-      final bytes = f.bytes ?? await File(f.path!).readAsBytes();
+      final bytes = f.bytes ?? (f.path != null ? await File(f.path!).readAsBytes() : null);
+      if (bytes == null) return;
       final n = await DictionaryDb.importJson(String.fromCharCodes(bytes));
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('已导入词条 $n 条')));
+        if (n < 0) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('导入失败，请检查 JSON 格式')));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('已导入词条 $n 条')));
+        }
       }
     }
   }

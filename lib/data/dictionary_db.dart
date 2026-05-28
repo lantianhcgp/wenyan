@@ -67,9 +67,10 @@ class DictionaryDb {
   /// 支持格式：
   /// - 数组：[{"word":"陋室","explain":"简陋的屋子"}, ...] 或 [{"head":"...","gloss":"..."}]
   /// - 对象：{"陋室":"简陋的屋子", "惟":"只、唯"}
+  /// 返回导入条数，出错时返回 -1。
   static Future<int> importJson(String jsonText) async {
     await init();
-    if (_db == null) return 0;
+    if (_db == null) return -1;
     final db = _db!;
     int count = 0;
     try {
@@ -94,7 +95,10 @@ class DictionaryDb {
         }
         await batch.commit(noResult: true);
       });
-    } catch (_) {}
+    } catch (e) {
+      //importJson failed
+      return -1;
+    }
     return count;
   }
 }
