@@ -23,28 +23,7 @@ jobs:
       - name: Ensure Android platform (generate android/)
         run: flutter create . --platforms=android
       - name: Update Android compileSdk to 36
-        run: |
-          ROOT_BUILD=$(find android -maxdepth 1 -name 'build.gradle*' | head -1)
-          if [ -n "$ROOT_BUILD" ]; then
-            if [[ "$ROOT_BUILD" == *.kts ]]; then
-              echo '' >> "$ROOT_BUILD"
-              echo 'subprojects { afterEvaluate { if (project.hasProperty("android")) { android { compileSdk = 36 } } } }' >> "$ROOT_BUILD"
-            else
-              echo '' >> "$ROOT_BUILD"
-              echo "subprojects { afterEvaluate { if (project.hasProperty('android')) { android { compileSdkVersion 36 } } } }" >> "$ROOT_BUILD"
-            fi
-            echo "Updated $ROOT_BUILD"
-          fi
-          APP_BUILD=$(find android/app -maxdepth 1 -name 'build.gradle*' | head -1)
-          if [ -n "$APP_BUILD" ]; then
-            if [[ "$APP_BUILD" == *.kts ]]; then
-              sed -i 's/compileSdk = .*/compileSdk = 36/' "$APP_BUILD"
-            else
-              sed -i 's/compileSdkVersion: .*/compileSdkVersion 36/' "$APP_BUILD"
-              sed -i 's/compileSdk .*/compileSdk 36/' "$APP_BUILD"
-            fi
-            echo "Updated $APP_BUILD"
-          fi
+        run: bash scripts/fix_compile_sdk.sh 36
       - name: Install dependencies
         run: flutter pub get
       - name: Analyze
@@ -77,28 +56,7 @@ jobs:
       - name: Ensure Android platform (generate android/)
         run: flutter create . --platforms=android
       - name: Update Android compileSdk to 36
-        run: |
-          ROOT_BUILD=$(find android -maxdepth 1 -name 'build.gradle*' | head -1)
-          if [ -n "$ROOT_BUILD" ]; then
-            if [[ "$ROOT_BUILD" == *.kts ]]; then
-              echo '' >> "$ROOT_BUILD"
-              echo 'subprojects { afterEvaluate { if (project.hasProperty("android")) { android { compileSdk = 36 } } } }' >> "$ROOT_BUILD"
-            else
-              echo '' >> "$ROOT_BUILD"
-              echo "subprojects { afterEvaluate { if (project.hasProperty('android')) { android { compileSdkVersion 36 } } } }" >> "$ROOT_BUILD"
-            fi
-            echo "Updated $ROOT_BUILD"
-          fi
-          APP_BUILD=$(find android/app -maxdepth 1 -name 'build.gradle*' | head -1)
-          if [ -n "$APP_BUILD" ]; then
-            if [[ "$APP_BUILD" == *.kts ]]; then
-              sed -i 's/compileSdk = .*/compileSdk = 36/' "$APP_BUILD"
-            else
-              sed -i 's/compileSdkVersion: .*/compileSdkVersion 36/' "$APP_BUILD"
-              sed -i 's/compileSdk .*/compileSdk 36/' "$APP_BUILD"
-            fi
-            echo "Updated $APP_BUILD"
-          fi
+        run: bash scripts/fix_compile_sdk.sh 36
       - name: Install dependencies
         run: flutter pub get
       - name: Analyze
